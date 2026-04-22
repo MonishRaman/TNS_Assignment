@@ -43,6 +43,7 @@ demo/
 - **MySQL Database**
 - **Lombok** (for reducing boilerplate code)
 - **Maven**
+- **React 19 + Vite 8** (frontend)
 
 ## Prerequisites
 
@@ -77,6 +78,46 @@ mvn spring-boot:run
 ```
 
 The application will start on `http://localhost:8080`
+
+## Frontend Setup (React)
+
+The project now includes a React frontend in the `frontend/` folder.
+
+1. Open a new terminal and move to frontend:
+```bash
+cd TNS_Assignment/frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the frontend:
+```bash
+npm run dev
+```
+
+Frontend runs at `http://localhost:5173`.
+
+## Running Frontend + Backend Together
+
+1. Start backend from `demo/`:
+```bash
+mvn spring-boot:run
+```
+
+2. Start frontend from `frontend/`:
+```bash
+npm run dev
+```
+
+3. Open `http://localhost:5173`
+
+Notes:
+- Vite proxy is configured to forward `/api/*` calls to Spring Boot (`http://localhost:8080`).
+- Backend CORS is enabled for `http://localhost:5173` and `http://127.0.0.1:5173`.
+- Optional override: set `VITE_API_BASE_URL` in frontend environment if you want to point React to a different API URL.
 
 ## API Endpoints
 
