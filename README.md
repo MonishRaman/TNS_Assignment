@@ -1,10 +1,10 @@
-# Student Placement Management System
+# Vettripath - Student Placement Management System
 
 A Spring Boot REST API application for managing student placements, colleges, and certifications.
 
 ## Overview
 
-TNS_Assignment is a comprehensive placement management system that provides REST APIs to manage students, colleges, placements, and certificates. It's built with Spring Boot, JPA, and MySQL.
+Vettripath is a placement management system that provides REST APIs to manage students, colleges, placements, and certificates. It is built with Spring Boot, JPA, PostgreSQL, and a React + Vite frontend.
 
 ## Features
 
@@ -37,18 +37,18 @@ demo/
 
 ## Technologies Used
 
-- **Java 17**
+- **Java 21**
 - **Spring Boot 4.0.5**
 - **Spring Data JPA**
-- **MySQL Database**
+- **PostgreSQL** (Local and Neon)
 - **Lombok** (for reducing boilerplate code)
 - **Maven**
 - **React 19 + Vite 8** (frontend)
 
 ## Prerequisites
 
-- Java 17 or higher
-- MySQL Server
+- Java 21 or higher
+- PostgreSQL (local) or Neon PostgreSQL
 - Maven 3.6+
 
 ## Installation & Setup
@@ -59,22 +59,68 @@ git clone <repository-url>
 cd TNS_Assignment/demo
 ```
 
-2. Configure the database connection in `src/main/resources/application.properties`:
+2. Backend uses dual DB configuration out of the box:
+- Local PostgreSQL is default.
+- Neon is used automatically when Neon env vars are set.
+
+Current datasource config in `demo/src/main/resources/application.properties`:
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/placement_db
-spring.datasource.username=root
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=${NEON_JDBC_URL:jdbc:postgresql://localhost:5432/placement_db}
+spring.datasource.username=${NEON_DB_USER:postgres}
+spring.datasource.password=${NEON_DB_PASSWORD:postgres}
 ```
 
-3. Build the project:
-```bash
-mvn clean install
+3. Choose one database mode.
+
+Local PostgreSQL mode (default):
+```powershell
+Set-Location "e:\MONISHRAMAN GIT\TNS_Assignment\demo"
+.\mvnw.cmd test
 ```
 
-4. Run the application:
+Neon mode:
+```powershell
+Set-Location "e:\MONISHRAMAN GIT\TNS_Assignment\demo"
+$env:NEON_JDBC_URL="jdbc:postgresql://<your-neon-host>/neondb?sslmode=require&channelBinding=require"
+$env:NEON_DB_USER="<your-neon-user>"
+$env:NEON_DB_PASSWORD="<your-neon-password>"
+.\mvnw.cmd test
+```
+
+Multi-device recommended mode (no repeated env commands):
+```powershell
+Set-Location "e:\MONISHRAMAN GIT\TNS_Assignment\demo"
+Copy-Item .env.properties.example .env.properties
+```
+
+Then edit `.env.properties` and set:
+- `NEON_JDBC_URL`
+- `NEON_DB_USER`
+- `NEON_DB_PASSWORD`
+
+Suggested multi-device routine:
+- Keep Neon values in a password manager (Bitwarden/1Password/etc.).
+- On each new device, copy `.env.properties.example` to `.env.properties` and paste values once.
+- Do not store production credentials in terminal history or commit them to git.
+
+Now run normally (same on every device):
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+Notes:
+- `demo/.env.properties` is git-ignored, so each machine can keep its own secrets safely.
+- If both `.env.properties` and shell env vars exist, shell env vars take priority.
+- If `.env.properties.example` accidentally contains real credentials, rotate Neon password immediately and replace the file with placeholders.
+
+4. Build the project:
 ```bash
-mvn spring-boot:run
+./mvnw clean install
+```
+
+5. Run the application:
+```bash
+./mvnw spring-boot:run
 ```
 
 The application will start on `http://localhost:8080`
@@ -104,7 +150,7 @@ Frontend runs at `http://localhost:5173`.
 
 1. Start backend from `demo/`:
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 2. Start frontend from `frontend/`:
@@ -177,26 +223,40 @@ Notes:
 ## Running Tests
 
 ```bash
-mvn test
+./mvnw test
 ```
 
 ## Build & Packaging
 
 Build the application as a JAR:
 ```bash
-mvn clean package
+./mvnw clean package
 ```
 
 The JAR file will be generated in the `target/` directory as `demo-0.0.1-SNAPSHOT.jar`
 
 ## Configuration
 
-Key configuration properties in `application.properties`:
+Key configuration properties in `demo/src/main/resources/application.properties`:
 - `spring.datasource.url` - Database connection URL
 - `spring.datasource.username` - Database username
 - `spring.datasource.password` - Database password
 - `spring.jpa.hibernate.ddl-auto` - JPA DDL strategy (update/create/create-drop)
 - `spring.jpa.show-sql` - Show SQL queries in logs
+
+Neon environment variables:
+- `NEON_JDBC_URL`
+- `NEON_DB_USER`
+- `NEON_DB_PASSWORD`
+
+Optional local secrets file:
+- `demo/.env.properties` (loaded automatically)
+- Template: `demo/.env.properties.example`
+
+Credential safety checklist:
+- Keep real passwords only in `.env.properties` (never in tracked files).
+- Rotate Neon credentials if they were shared in chats/screenshots/commits.
+- Prefer placeholders in `.env.properties.example`.
 
 ## Contributing
 
