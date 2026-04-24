@@ -13,4 +13,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     // Search by name (for search module)
     List<Student> findByName(String name);
+
+    List<Student> findByNameContainingIgnoreCase(String name);
+
+    List<Student> findByCourseIgnoreCase(String course);
+
+    List<Student> findByYear(int year);
+
+    boolean existsByHallTicketNo(Long hallTicketNo);
+
+    boolean existsByHallTicketNoAndIdNot(Long hallTicketNo, Long id);
 }

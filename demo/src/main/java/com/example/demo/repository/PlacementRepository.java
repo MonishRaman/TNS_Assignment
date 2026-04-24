@@ -13,4 +13,6 @@ public interface PlacementRepository extends JpaRepository<Placement, Long> {
 
     // Find by qualification
     List<Placement> findByQualification(String qualification);
+
+    List<Placement> findByQualificationIgnoreCase(String qualification);
 }
